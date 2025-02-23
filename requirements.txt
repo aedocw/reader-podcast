@@ -1,0 +1,12 @@
+kokoro
+lxml
+lxml_html_clean
+mutagen
+newspaper3k
+nltk
+numpy
+pillow
+pydub
+setuptools
+soundfile
+tqdm
