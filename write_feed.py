@@ -1,6 +1,10 @@
+import os
 import time
 from xml.etree.ElementTree import Element, SubElement, ElementTree, tostring, parse
 from xml.dom.minidom import parseString
+
+def remove_blank_lines(xml_str):
+    return "\n".join(line for line in xml_str.splitlines() if line.strip())
 
 def append_to_feed(title, url, filename):
     # domain needs to come from env var
@@ -63,8 +67,10 @@ def append_to_feed(title, url, filename):
     # Generate and pretty-print the XML
     xml_str = tostring(root, encoding='utf-8').decode('utf-8')
     pretty_xml_str = parseString(xml_str).toprettyxml(indent="  ", newl="\n")
-    
-    # Write the pretty-printed XML to the file
-    with open("feed.xml", "w", encoding="utf-8") as f:
-        f.write(pretty_xml_str.strip())
 
+    # Remove blank lines
+    clean_xml_str = remove_blank_lines(pretty_xml_str)
+    
+    # Write the cleaned and pretty-printed XML to the file
+    with open("feed.xml", "w", encoding="utf-8") as f:
+        f.write(clean_xml_str)
