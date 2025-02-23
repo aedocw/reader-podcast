@@ -20,3 +20,4 @@ LOTS of stuff!
 * Nicer web form
 * Probably tons of room for optimization
 * LOTS of room for error handling, right now it does none
+* Dockerize for ease of installation, presumably behind Caddy
