@@ -54,9 +54,6 @@ def read_article(paragraphs, speaker, filename, speed):
     files = []
     pipeline = KPipeline(lang_code=speaker[0])
     for i, text in enumerate(paragraphs):
-        # TESTING, REMOVE FOR FULL LENGTH
-        if i > 3:
-            continue
         file = f"pgraph{i}.wav"
         #print(f"Reading to {file} with {text}")
         kokoro_read(text, speaker, file, pipeline, speed)
