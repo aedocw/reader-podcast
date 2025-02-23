@@ -28,3 +28,4 @@ pip-log.txt
 .python-version
 feed.xml
 article_*
+*.wav
