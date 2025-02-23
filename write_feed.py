@@ -3,9 +3,14 @@ from xml.etree.ElementTree import Element, SubElement, ElementTree, tostring, pa
 from xml.dom.minidom import parseString
 
 def append_to_feed(title, url, filename):
+    # domain needs to come from env var
     domain = "http://127.0.0.1:5000"
     try:
-        # Try to load the existing feed
+        # Get the file size in bytes
+        file_path = os.path.join('mp3', filename)
+        file_size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
+
+        # Parse or create the RSS feed.xml
         tree = parse("feed.xml")
         root = tree.getroot()
     except FileNotFoundError:
@@ -18,9 +23,9 @@ def append_to_feed(title, url, filename):
         channel = SubElement(root, "channel")
         
         # Add channel metadata
-        SubElement(channel, "title").text = "Listen Later Podcast"
-        SubElement(channel, "link").text = "https://www.listenlater.net"
-        SubElement(channel, "description").text = "This is a podcast created with ListenLater.net"
+        SubElement(channel, "title").text = "Article Reader Podcast"
+        SubElement(channel, "link").text = "https://github.com/aedocw/reader-podcast"
+        SubElement(channel, "description").text = "This is a podcast created with https://github.com/aedocw/reader-podcast"
         owner = SubElement(channel, "itunes:owner")
         SubElement(owner, "itunes:name").text = "Owner Name"
         SubElement(owner, "itunes:email").text = "owner@example.com"
@@ -28,9 +33,9 @@ def append_to_feed(title, url, filename):
         SubElement(channel, "itunes:keywords").text = ""
         
         image = SubElement(channel, "image")
-        SubElement(image, "title").text = "Listen Later Podcast Logo"
-        SubElement(image, "url").text = "https://www.listenlater.net/api/resources/images/logo.png"
-        SubElement(image, "link").text = "https://www.listenlater.net"
+        SubElement(image, "title").text = "Podcast Logo"
+        SubElement(image, "url").text = f"{domain}/logo.png"
+        SubElement(image, "link").text = f"{domain}"
         SubElement(image, "width").text = "-1"
         SubElement(image, "height").text = "-1"
         
@@ -46,7 +51,7 @@ def append_to_feed(title, url, filename):
     audio_url = f"{domain}/mp3/{filename}"
     enclosure = SubElement(item, "enclosure", {
         "url": audio_url,
-        "length": "0",  # Update this if you can provide the actual file length
+        "length": str(file_size),
         "type": "audio/mpeg"
     })
     
