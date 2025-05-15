@@ -5,7 +5,14 @@ import read_content
 import write_feed
 import time
 from xml.etree.ElementTree import parse
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+key = os.getenv('KEY')
+site_url = os.getenv('URL')
+port = os.getenv('PORT')
+default_speaker = os.getenv('DEFAULT_SPEAKER')
 
 app = Bottle()
 
@@ -16,7 +23,7 @@ os.makedirs(MP3_DIR, exist_ok=True)
 
 @app.hook('before_request')
 def require_key():
-    if request.query.key != 'secret1234':
+    if request.query.key != key:
         response.status = 403
         return "Forbidden"
 
@@ -80,10 +87,10 @@ def add_url():
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
             read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
-            write_feed.append_to_feed(title, f"http://127.0.0.1:5000/mp3/{filename}?key=secret1234", filename)
+            write_feed.append_to_feed(title, f"http://127.0.0.1:{port}/mp3/{filename}?key={key}", filename)
             
             message = f"Successfully added '{title}' to the feed."
-            return redirect('/add?key=secret1234')
+            return redirect(f"/add?key={key}")
         except Exception as e:
             message = f"An error occurred: {e}"
 
@@ -104,4 +111,4 @@ def home():
     return 'Welcome to the Podcast Web Service. Visit /feed.xml to view the feed, /add to add a new URL, or /mp3/<filename> to stream an episode.'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
