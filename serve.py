@@ -23,7 +23,8 @@ os.makedirs(MP3_DIR, exist_ok=True)
 
 @app.hook('before_request')
 def require_key():
-    if request.query.key != key:
+    req_key = request.query.get('key')
+    if not req_key or req_key != key:
         response.status = 403
         return "Forbidden"
 
