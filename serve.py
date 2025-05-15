@@ -50,23 +50,23 @@ form_template = """
 <!doctype html>
 <title>Add URL</title>
 <h1>Add a new article to the podcast feed</h1>
-<form method=post enctype=multipart/form-data>
-  <input type=text name=url placeholder="Enter URL" required>
-  <select name=speaker>
-    {% for speaker in speakers %}
-      <option value="{{ speaker }}">{{ speaker }}</option>
-    {% endfor %}
+<form method="post" enctype="multipart/form-data">
+  <input type="text" name="url" placeholder="Enter URL" required>
+  <select name="speaker">
+  % for speaker in speakers:
+      <option value="{{speaker}}">{{speaker}}</option>
+  % end
   </select>
-  <input type=submit value=Submit>
+  <input type="submit" value="Submit">
 </form>
-{% if message %}
-<p>{{ message }}</p>
-{% endif %}
+% if message:
+<p>{{message}}</p>
+% end
 <h2>Existing Podcasts</h2>
 <ul>
-{% for title, pub_date in episodes %}
-  <li><strong>{{ title }}</strong> - {{ pub_date }}</li>
-{% endfor %}
+% for title, pub_date in episodes:
+  <li><strong>{{title}}</strong> - {{pub_date}}</li>
+% end
 </ul>
 """
 
