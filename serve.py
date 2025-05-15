@@ -73,7 +73,7 @@ form_template = """
 def feed():
     return static_file('feed.xml', root='.', mimetype='application/rss+xml')
 
-@app.route('/add', methods=['GET', 'POST'])
+@app.route('/add', method=['GET', 'POST'])
 def add_url():
     message = ''
     if request.method == 'POST':
