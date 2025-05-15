@@ -91,7 +91,7 @@ def add_url():
     # Pass speakers list to the template
     return template(form_template, message=message, episodes=episodes, speakers=speakers)
 
-@app.route('/mp3/<path:filename>')
+@app.route('/mp3/<filename:path>')
 def serve_mp3(filename):
     file_path = os.path.join(MP3_DIR, filename)
     if os.path.exists(file_path):
