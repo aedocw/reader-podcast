@@ -1,4 +1,4 @@
-from bottle import Bottle, request, response, redirect, static_file, template
+from bottle import Bottle, request, response, redirect, static_file, template, abort
 import os
 import get_content
 import read_content
@@ -25,8 +25,7 @@ os.makedirs(MP3_DIR, exist_ok=True)
 def require_key():
     req_key = request.query.get('key')
     if not req_key or req_key != key:
-        response.status = 403
-        return "Forbidden"
+        abort(403, "Forbidden")
 
 # This should come from env var?
 speakers = ["af_heart", "af_alloy", "af_aoede", "af_bella", "af_jessica", "af_kore", "af_nicole", "af_nova", "af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael", "am_onyx", "am_puck", "am_santa", "bf_alice", "bf_emma", "bf_isabella", "bf_lily", "bm_daniel", "bm_fable", "bm_george", "bm_lewis",]
