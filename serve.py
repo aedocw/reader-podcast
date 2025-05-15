@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, redirect, url_for, render_template_string
+from bottle import Bottle, request, response, redirect, static_file, template
 import os
 import get_content
 import read_content
@@ -7,12 +7,18 @@ import time
 from xml.etree.ElementTree import parse
 
 
-app = Flask(__name__)
+app = Bottle()
 
 # Directory to store MP3 files
 MP3_DIR = 'mp3'
 
 os.makedirs(MP3_DIR, exist_ok=True)
+
+@app.hook('before_request')
+def require_key():
+    if request.query.key != 'secret1234':
+        response.status = 403
+        return "Forbidden"
 
 # This should come from env var?
 speakers = ["af_heart", "af_alloy", "af_aoede", "af_bella", "af_jessica", "af_kore", "af_nicole", "af_nova", "af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael", "am_onyx", "am_puck", "am_santa", "bf_alice", "bf_emma", "bf_isabella", "bf_lily", "bm_daniel", "bm_fable", "bm_george", "bm_lewis",]
@@ -58,7 +64,7 @@ form_template = """
 
 @app.route('/feed.xml')
 def feed():
-    return send_file('feed.xml', mimetype='application/rss+xml')
+    return static_file('feed.xml', root='.', mimetype='application/rss+xml')
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_url():
@@ -74,22 +80,22 @@ def add_url():
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
             read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
-            write_feed.append_to_feed(title, f"http://127.0.0.1:5000/mp3/{filename}", filename)
-
+            write_feed.append_to_feed(title, f"http://127.0.0.1:5000/mp3/{filename}?key=secret1234", filename)
+            
             message = f"Successfully added '{title}' to the feed."
-            return redirect(url_for('add_url'))
+            return redirect('/add?key=secret1234')
         except Exception as e:
             message = f"An error occurred: {e}"
 
     episodes = get_existing_episodes()
     # Pass speakers list to the template
-    return render_template_string(form_template, message=message, episodes=episodes, speakers=speakers)
+    return template(form_template, message=message, episodes=episodes, speakers=speakers)
 
 @app.route('/mp3/<path:filename>')
 def serve_mp3(filename):
     file_path = os.path.join(MP3_DIR, filename)
     if os.path.exists(file_path):
-        return send_file(file_path, mimetype='audio/mpeg')
+        return static_file(filename, root=MP3_DIR, mimetype='audio/mpeg')
     else:
         return "File not found", 404
 
