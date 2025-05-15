@@ -77,8 +77,8 @@ def feed():
 def add_url():
     message = ''
     if request.method == 'POST':
-        url = request.form['url']
-        speaker = request.form.get('speaker') or "af_heart"
+        url = request.forms.get('url')
+        speaker = request.forms.get('speaker') or "af_heart"
         speed = 1.1
         timestamp = int(time.time())
         filename = f"article_{timestamp}.mp3"
