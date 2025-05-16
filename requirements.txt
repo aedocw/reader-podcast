@@ -6,9 +6,10 @@ mutagen
 newspaper3k
 nltk
 numpy
+torch
 pillow
 pydub
 setuptools
 soundfile
 tqdm
-dotenv
+python-dotenv
