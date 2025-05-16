@@ -21,11 +21,6 @@ MP3_DIR = 'mp3'
 
 os.makedirs(MP3_DIR, exist_ok=True)
 
-@app.hook('before_request')
-def require_key():
-    req_key = request.query.get('key')
-    if not req_key or req_key != key:
-        abort(403, "Forbidden")
 
 # This should come from env var?
 speakers = ["af_sky", "af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_kore", "af_nicole", "af_nova", "af_river", "af_sarah", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael", "am_onyx", "am_puck", "am_santa", "bf_alice", "bf_emma", "bf_isabella", "bf_lily", "bm_daniel", "bm_fable", "bm_george", "bm_lewis",]
@@ -79,6 +74,9 @@ def logo():
 
 @app.route('/add', method=['GET', 'POST'])
 def add_url():
+    req_key = request.query.get('key')
+    if not req_key or req_key != key:
+        abort(403, "Forbidden")
     message = ''
     if request.method == 'POST':
         url = request.forms.get('url')
@@ -91,7 +89,7 @@ def add_url():
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
             read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
-            write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}?key={key}", filename)
+            write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}", filename)
             
             message = f"Successfully added '{title}' to the feed."
             return redirect(f"/add?key={key}")
