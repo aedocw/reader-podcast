@@ -2,13 +2,21 @@ import os
 import time
 from xml.etree.ElementTree import Element, SubElement, ElementTree, tostring, parse
 from xml.dom.minidom import parseString
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+key = os.getenv('KEY')
+site_url = os.getenv('URL')
+port = os.getenv('PORT')
 
 def remove_blank_lines(xml_str):
     return "\n".join(line for line in xml_str.splitlines() if line.strip())
 
 def append_to_feed(title, url, filename):
     # domain needs to come from env var
-    domain = "http://127.0.0.1:5000"
+    #domain = "http://127.0.0.1:5000"
+    domain = f"{site_url}"
     try:
         # Get the file size in bytes
         file_path = os.path.join('mp3', filename)
@@ -38,7 +46,7 @@ def append_to_feed(title, url, filename):
         
         image = SubElement(channel, "image")
         SubElement(image, "title").text = "Podcast Logo"
-        SubElement(image, "url").text = f"{domain}/logo.png"
+        SubElement(image, "url").text = f"{domain}/logo.jpg"
         SubElement(image, "link").text = f"{domain}"
         SubElement(image, "width").text = "-1"
         SubElement(image, "height").text = "-1"
