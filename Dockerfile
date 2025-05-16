@@ -10,7 +10,7 @@ COPY . .
 # Install any needed packages specified in requirements.txt
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt update && apt install wkhtmltopdf -y
+RUN apt update && apt install ffmpeg -y
 
 # Expose port 8080 for the application
 EXPOSE 8025
