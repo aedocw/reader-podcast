@@ -1,6 +1,8 @@
 .DS_Store
 .venv
 __pycache__
+mp3/*
+feed.xml
 
 *.py[co]
 
@@ -29,3 +31,4 @@ pip-log.txt
 feed.xml
 article_*
 *.wav
+.aider*
