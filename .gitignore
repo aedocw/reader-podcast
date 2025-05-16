@@ -1,5 +1,6 @@
 .DS_Store
 .venv
+.env
 __pycache__
 mp3/*
 feed.xml
