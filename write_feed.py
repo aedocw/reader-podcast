@@ -23,7 +23,7 @@ def append_to_feed(title, url, filename):
         file_size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
 
         # Parse or create the RSS feed.xml
-        tree = parse("feed.xml")
+        tree = parse(os.path.join('mp3', "feed.xml"))
         root = tree.getroot()
     except FileNotFoundError:
         # If feed.xml does not exist, initialize a new root with namespaces
@@ -80,5 +80,5 @@ def append_to_feed(title, url, filename):
     clean_xml_str = remove_blank_lines(pretty_xml_str)
     
     # Write the cleaned and pretty-printed XML to the file
-    with open("feed.xml", "w", encoding="utf-8") as f:
+    with open(os.path.join('mp3', "feed.xml"), "w", encoding="utf-8") as f:
         f.write(clean_xml_str)

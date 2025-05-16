@@ -32,7 +32,7 @@ speakers = ["af_sky", "af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessic
 
 def get_existing_episodes():
     try:
-        tree = parse("feed.xml")
+        tree = parse(os.path.join(MP3_DIR, "feed.xml"))
         root = tree.getroot()
         channel = root.find("channel")
         episodes = []
@@ -71,7 +71,7 @@ form_template = """
 
 @app.route('/feed.xml')
 def feed():
-    return static_file('feed.xml', root='.', mimetype='application/rss+xml')
+    return static_file('feed.xml', root=MP3_DIR, mimetype='application/rss+xml')
 
 @app.route('/logo.jpg')
 def logo():
