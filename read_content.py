@@ -39,7 +39,8 @@ def append_silence(tempfile, duration=1200):
     # Append the silence segment to the audio
     combined = audio + silence
     # Save the combined audio back to file
-    combined.export(tempfile, format="wav")
+    out_f = combined.export(tempfile, format="wav")
+    out_f.close()
 
 def kokoro_read(paragraph, speaker, filename, pipeline, speed):
     audio_segments = []
