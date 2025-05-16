@@ -9,9 +9,11 @@ pip install -r requirements.txt
 python serve.py
 ```
 
-Then visit http://127.0.0.1:5000/add and add a URL
+Then visit http://127.0.0.1:8025/add and add a URL
 
-Add http://127.0.0.1:5000/feed.xml to your podcast app to follow your podcast
+Add http://127.0.0.1:8025/feed.xml to your podcast app to follow your podcast
+
+These instructions are not right! Need to make a .env file, specify URL and port there...
 
 TODO:
 LOTS of stuff!
@@ -38,6 +40,13 @@ docker-compose.yml
       - "reader-podcast.env"
     ports:
       - "8025:8025"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     restart: unless-stopped
     volumes:
       - reader-podcast-mp3:/usr/src/app/mp3
