@@ -1,4 +1,4 @@
-flask
+bottle
 kokoro
 lxml
 lxml_html_clean
@@ -11,3 +11,4 @@ pydub
 setuptools
 soundfile
 tqdm
+dotenv
