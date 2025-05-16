@@ -91,7 +91,7 @@ def add_url():
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
             read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
-            write_feed.append_to_feed(title, f"http://127.0.0.1:{port}/mp3/{filename}?key={key}", filename)
+            write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}?key={key}", filename)
             
             message = f"Successfully added '{title}' to the feed."
             return redirect(f"/add?key={key}")

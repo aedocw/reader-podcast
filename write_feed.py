@@ -14,8 +14,6 @@ def remove_blank_lines(xml_str):
     return "\n".join(line for line in xml_str.splitlines() if line.strip())
 
 def append_to_feed(title, url, filename):
-    # domain needs to come from env var
-    #domain = "http://127.0.0.1:5000"
     domain = f"{site_url}"
     try:
         # Get the file size in bytes

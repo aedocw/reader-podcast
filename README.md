@@ -26,3 +26,25 @@ For now:
 * Put URL and any other params into .env file
 * Require key in URL
 * Put in docker compose
+
+Build docker image with `docker image build -t reader-podcast .`
+
+docker-compose.yml
+  reader-podcast:
+    hostname: <hostname>
+    container_name: reader-podcast
+    image: reader-podcast:latest
+    env_file:
+      - "reader-podcast.env"
+    ports:
+      - "8025:8025"
+    restart: unless-stopped
+    volumes:
+      - reader-podcast-mp3:/usr/src/app/mp3
+
+Example reader-podcast.env file:
+```
+KEY="somesecretkeyhere"
+URL="https://<your URL>"
+PORT="8025"
+```
