@@ -13,7 +13,7 @@ port = os.getenv('PORT')
 def remove_blank_lines(xml_str):
     return "\n".join(line for line in xml_str.splitlines() if line.strip())
 
-def append_to_feed(title, url, filename):
+def append_to_feed(title, url, filename, source_url):
     domain = f"{site_url}"
     try:
         # Get the file size in bytes
@@ -55,7 +55,7 @@ def append_to_feed(title, url, filename):
     item = SubElement(channel, "item")
     SubElement(item, "title").text = title
     SubElement(item, "link").text = url
-    SubElement(item, "description").text = f"This episode is titled '{title}' and is available at {url}."
+    SubElement(item, "description").text = f"This episode is titled '{title}', the original source was {source_url} and the audio version is available at {url}."
     
     # Corrected Enclosure URL
     audio_url = f"{domain}/mp3/{filename}"

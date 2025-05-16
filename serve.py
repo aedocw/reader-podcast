@@ -80,7 +80,7 @@ def add_url():
     message = ''
     if request.method == 'POST':
         url = request.forms.get('url')
-        speaker = request.forms.get('speaker') or "af_heart"
+        speaker = request.forms.get('speaker') or "af_sky"
         speed = 1.1
         timestamp = int(time.time())
         filename = f"article_{timestamp}.mp3"
@@ -89,7 +89,7 @@ def add_url():
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
             read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
-            write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}", filename)
+            write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}", filename, url)
             
             message = f"Successfully added '{title}' to the feed."
             return redirect(f"/add?key={key}")
