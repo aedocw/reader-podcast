@@ -73,6 +73,10 @@ form_template = """
 def feed():
     return static_file('feed.xml', root='.', mimetype='application/rss+xml')
 
+@app.route('/logo.jpg')
+def logo():
+    return static_file('logo.jpg', root='.', mimetype='image/jpeg')
+
 @app.route('/add', method=['GET', 'POST'])
 def add_url():
     message = ''
