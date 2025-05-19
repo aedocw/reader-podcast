@@ -34,7 +34,8 @@ def get_existing_episodes():
         for item in channel.findall("item"):
             title = item.find("title").text
             pub_date = item.find("pubDate").text
-            episodes.append((title, pub_date))
+            link = item.find("link").text
+            episodes.append((title, link, pub_date))
         return episodes
     except FileNotFoundError:
         return []
@@ -58,8 +59,8 @@ form_template = """
 % end
 <h2>Existing Podcasts</h2>
 <ul>
-% for title, pub_date in episodes:
-  <li><strong>{{title}}</strong> - {{pub_date}}</li>
+% for title, link, pub_date in episodes:
+  <li><strong><a href="{{link}}">{{title}}</a></strong> - {{pub_date}}</li>
 % end
 </ul>
 """
