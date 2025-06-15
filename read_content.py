@@ -37,7 +37,7 @@ def append_silence(tempfile, duration=1200):
 
 def chatterbox_read(sentences, sample, filenames, model):
     for i, sent in enumerate(sentences):
-        wav = model.generate(sent, audio_prompt_path="voices/"+sample+".wav")
+        wav = model.generate(sent, audio_prompt_path="voices/"+sample)
         ta.save(filenames[i], wav, model.sr)
 
 def read_article(paragraphs, speaker, filename):
