@@ -57,11 +57,10 @@ def read_article(paragraphs, speaker, filename):
         combined.export(f"pgraph{i}.wav", format="wav")
         for file in filenames:
             os.remove(file)
-        files.append(file)
-    sorted_files = sorted(files, key=sort_key)
+        files.append(f"pgraph{i}.wav")
     combined = AudioSegment.empty()
-    for file in sorted_files:
+    for file in files:
         combined += AudioSegment.from_file(file)
     combined.export(filename, format="mp3")
-    for file in sorted_files:
+    for file in files:
         os.remove(file)
