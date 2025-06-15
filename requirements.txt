@@ -1,5 +1,5 @@
 bottle
-kokoro
+chatterbox-tts>=0.1.2
 lxml
 lxml_html_clean
 mutagen
