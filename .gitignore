@@ -3,6 +3,7 @@
 .env
 __pycache__
 mp3/*
+voices/*
 feed.xml
 
 *.py[co]
