@@ -22,8 +22,8 @@ MP3_DIR = 'mp3'
 os.makedirs(MP3_DIR, exist_ok=True)
 
 
-# This should come from env var?
-speakers = ["af_sky", "af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_kore", "af_nicole", "af_nova", "af_river", "af_sarah", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam", "am_michael", "am_onyx", "am_puck", "am_santa", "bf_alice", "bf_emma", "bf_isabella", "bf_lily", "bm_daniel", "bm_fable", "bm_george", "bm_lewis",]
+# This should come from list of files in voices subdir
+speakers = ["adam.wav", "lincoln.wav", "reamde.wav", "werner-herzog.wav", "lauren.wav", "mcgee.wav", "stephen-fry.wav"]
 
 def get_existing_episodes():
     try:
@@ -81,15 +81,14 @@ def add_url():
     message = ''
     if request.method == 'POST':
         url = request.forms.get('url')
-        speaker = request.forms.get('speaker') or "af_sky"
-        speed = 1.1
+        speaker = request.forms.get('speaker') or "lauren.wav"
         timestamp = int(time.time())
         filename = f"article_{timestamp}.mp3"
         
         try:
             title, paragraphs = get_content.fetch(url)
             paragraphs.insert(0, title)
-            read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename), speed)
+            read_content.read_article(paragraphs, speaker, os.path.join(MP3_DIR, filename))
             write_feed.append_to_feed(title, f"{site_url}/mp3/{filename}", filename, url)
             
             message = f"Successfully added '{title}' to the feed."
