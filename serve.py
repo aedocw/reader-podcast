@@ -75,7 +75,6 @@ form_template = """
 </ul>
 """
 
-ensure_punkt()
 
 @app.route('/feed.xml')
 def feed():

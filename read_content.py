@@ -21,6 +21,16 @@ from pydub import AudioSegment
 
 warnings.filterwarnings("ignore")
 
+def ensure_punkt():
+    try:
+        nltk.data.find("tokenizers/punkt")
+    except LookupError:
+        nltk.download("punkt")
+    try:
+        nltk.data.find("tokenizers/punkt_tab")
+    except LookupError:
+        nltk.download("punkt_tab")
+
 def sort_key(s):
     # extract number from the string
     return int(re.findall(r'\d+', s)[0])
@@ -64,3 +74,5 @@ def read_article(paragraphs, speaker, filename):
     combined.export(filename, format="mp3")
     for file in files:
         os.remove(file)
+
+ensure_punkt()
