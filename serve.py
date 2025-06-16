@@ -25,16 +25,6 @@ os.makedirs(MP3_DIR, exist_ok=True)
 # This should come from list of files in voices subdir
 speakers = ["adam.wav", "lincoln.wav", "reamde.wav", "werner-herzog.wav", "lauren.wav", "mcgee.wav", "stephen-fry.wav"]
 
-def ensure_punkt():
-    try:
-        nltk.data.find("tokenizers/punkt")
-    except LookupError:
-        nltk.download("punkt")
-    try:
-        nltk.data.find("tokenizers/punkt_tab")
-    except LookupError:
-        nltk.download("punkt_tab")
-
 def get_existing_episodes():
     try:
         tree = parse(os.path.join(MP3_DIR, "feed.xml"))
