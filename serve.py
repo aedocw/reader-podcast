@@ -21,9 +21,12 @@ MP3_DIR = 'mp3'
 
 os.makedirs(MP3_DIR, exist_ok=True)
 
-
-# This should come from list of files in voices subdir
-speakers = ["adam.wav", "lincoln.wav", "reamde.wav", "werner-herzog.wav", "lauren.wav", "mcgee.wav", "stephen-fry.wav"]
+# this function retrieves the wav files from the voices directory
+def get_speakers():
+    speakers_dir = 'voices'
+    if not os.path.exists(speakers_dir):
+        return []
+    return [f for f in os.listdir(speakers_dir) if f.endswith('.wav')]
 
 def get_existing_episodes():
     try:
@@ -65,6 +68,7 @@ form_template = """
 </ul>
 """
 
+speakers = get_speakers()
 
 @app.route('/feed.xml')
 def feed():
