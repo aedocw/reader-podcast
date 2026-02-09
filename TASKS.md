@@ -26,9 +26,9 @@
 
 ## Milestone 4: Background Processing
 
-- [ ] Implement app/worker.py (TTS processing thread + startup cleanup for interrupted jobs)
-- [ ] Convert /add POST to async: create pending episode row, let worker process it
-- [ ] Add episode status display in web UI (pending/processing/done/error)
+- [x] Implement app/worker.py (TTS processing thread + startup cleanup for interrupted jobs)
+- [x] Convert /add POST to async: create pending episode row, let worker process it
+- [x] Add episode status display in web UI (pending/processing/done/error)
 
 ## Milestone 5: RSS Feed Monitoring
 

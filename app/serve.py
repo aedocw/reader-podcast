@@ -8,7 +8,7 @@ import os
 import bottle
 from bottle import Bottle, request, response, abort, static_file, template, redirect
 
-from app.config import PORT, SITE_URL, MP3_DIR, DEFAULT_VOICE, ADMIN_KEY
+from app.config import PORT, MP3_DIR, DEFAULT_VOICE
 from app.db import (
     init_db,
     create_user,
@@ -21,7 +21,7 @@ from app.db import (
 from app.auth import require_user, require_admin
 from app.feed_gen import generate_feed
 from app.scraper import scrape
-from app.tts import synthesize
+from app.worker import start_workers
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def logo():
 @app.route("/add", method=["GET", "POST"])
 @require_user
 def add_url(user):
-    """Add article form and submission. Synchronous for now (Milestone 4 makes it async)."""
+    """Add article form. POST scrapes title and creates a pending episode for the worker."""
     message = ""
     error = False
     if request.method == "POST":
@@ -81,34 +81,22 @@ def add_url(user):
         else:
             try:
                 article = scrape(url)
-                episode = create_episode(user["id"], article.title, url, voice)
-                mp3_filename = f"episode_{episode['id']}.mp3"
-                output_path = os.path.join(MP3_DIR, mp3_filename)
-
-                from app.db import update_episode_status
-                update_episode_status(episode["id"], "processing")
-
-                file_size = synthesize(article.paragraphs, voice, output_path)
-                update_episode_status(
-                    episode["id"], "done",
-                    mp3_filename=mp3_filename, file_size=file_size,
-                )
-                message = f"Added '{article.title}' to your feed."
+                create_episode(user["id"], article.title, url, voice)
+                message = f"Queued '{article.title}' for processing."
             except Exception as e:
-                log.exception("Failed to process article: %s", url)
-                if episode:
-                    from app.db import update_episode_status
-                    update_episode_status(episode["id"], "error", error_message=str(e))
+                log.exception("Failed to scrape article: %s", url)
                 message = f"Error: {e}"
                 error = True
 
     episodes = get_episodes_for_user(user["id"])
+    has_active = any(ep["status"] in ("pending", "processing") for ep in episodes)
     voices = _get_english_voices()
     return template(
         "add",
         message=message,
         error=error,
         episodes=episodes,
+        has_active=has_active,
         voices=voices,
         default_voice=user["default_voice"],
         feed_token=user["feed_token"],
@@ -231,6 +219,7 @@ def _get_english_voices():
 def main():
     logging.basicConfig(level=logging.INFO)
     init_db()
+    start_workers()
     log.info("Starting Reader Podcast on port %d", PORT)
     app.run(host="0.0.0.0", port=PORT, debug=True, reloader=False)
 
