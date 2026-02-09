@@ -44,4 +44,4 @@
 - [ ] Write migration script: parse existing feed.xml → insert episodes into SQLite, create default user
 - [ ] Update cli.py to use new modules
 - [ ] Update README.md with new setup instructions
-- [ ] Remove old files (read_content.py, get_content.py, write_feed.py, root serve.py, add_article_cli.py, requirements.txt, voices/)
+- [x] Remove old files (read_content.py, get_content.py, write_feed.py, root serve.py, add_article_cli.py, requirements.txt, voices/)

@@ -57,4 +57,19 @@ app/worker.py      - Background processing
 app/config.py      - Configuration
 app/auth.py        - Authentication
 app/text_clean.py  - Text normalization
+templates/         - Bottle HTML templates (add.html, subscriptions.html)
 ```
+
+## Progress Summary
+
+Milestones 1-5 are complete. The app is fully functional:
+
+- **Milestone 1**: uv project init, `app/` package with `config.py` and `db.py` (SQLite WAL, 4 tables), `data/` directory structure
+- **Milestone 2**: `text_clean.py` (quote/dash/whitespace normalization), `tts.py` (Edge TTS async parallel sentence synthesis with retries, pydub concatenation), `scraper.py` (newspaper3k + ScrapedArticle dataclass)
+- **Milestone 3**: `auth.py` (require_user/require_admin decorators), `feed_gen.py` (dynamic per-user RSS 2.0), `serve.py` (15 routes: add, episodes, feed, mp3, voices, subscriptions, admin), HTML templates
+- **Milestone 4**: `worker.py` (TTS daemon thread polling for pending episodes, startup cleanup), async `/add` POST (creates pending row, worker processes), auto-refresh UI
+- **Milestone 5**: `rss_monitor.py` (feedparser polling, seen_articles tracking, mark-all-seen on subscribe), RSS poller daemon thread, subscription toggle/delete routes
+
+**Milestone 6** (remaining): Dockerfile update, migration script (old feed.xml → SQLite), README update. Old root-level files have already been removed.
+
+The old `mp3/` directory with existing episodes and `feed.xml` is preserved for the migration script.
