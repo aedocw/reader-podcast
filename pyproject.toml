@@ -1,0 +1,17 @@
+[project]
+name = "reader-podcast"
+version = "0.1.0"
+description = "Self-hosted web app that converts articles into podcast episodes using Edge TTS"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "bottle",
+    "python-dotenv",
+    "edge-tts",
+    "newspaper3k",
+    "pydub",
+    "nltk",
+    "feedparser",
+    "lxml",
+    "lxml-html-clean",
+]

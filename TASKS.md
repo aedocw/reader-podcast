@@ -2,11 +2,11 @@
 
 ## Milestone 1: Project Infrastructure
 
-- [ ] Initialize uv project with pyproject.toml (deps: bottle, python-dotenv, edge-tts, newspaper3k, pydub, nltk, feedparser, lxml)
-- [ ] Create app/ package directory structure
-- [ ] Implement app/config.py (env var loading with defaults)
-- [ ] Implement app/db.py (SQLite connection helper, schema creation, CRUD functions)
-- [ ] Create data/ directory structure (data/mp3/, data/tmp/) and update .gitignore
+- [x] Initialize uv project with pyproject.toml (deps: bottle, python-dotenv, edge-tts, newspaper3k, pydub, nltk, feedparser, lxml)
+- [x] Create app/ package directory structure
+- [x] Implement app/config.py (env var loading with defaults)
+- [x] Implement app/db.py (SQLite connection helper, schema creation, CRUD functions)
+- [x] Create data/ directory structure (data/mp3/, data/tmp/) and update .gitignore
 
 ## Milestone 2: Core TTS Replacement
 

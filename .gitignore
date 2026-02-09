@@ -34,3 +34,12 @@ feed.xml
 article_*
 *.wav
 .aider*
+
+# Data directory
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/mp3/*
+data/tmp/*
+!data/mp3/.gitkeep
+!data/tmp/.gitkeep
