@@ -70,9 +70,9 @@ def logo():
 @app.route("/add", method=["GET", "POST"])
 @require_user
 def add_url(user):
-    """Add article form. POST scrapes title and creates a pending episode for the worker."""
-    message = ""
-    error = False
+    """Add article form. POST scrapes and shows preview for user approval."""
+    message = request.query.get("message", "")
+    error = request.query.get("error") == "1"
     if request.method == "POST":
         url = request.forms.get("url")
         voice = request.forms.get("voice") or user["default_voice"]
@@ -82,8 +82,14 @@ def add_url(user):
         else:
             try:
                 article = scrape(url)
-                create_episode(user["id"], article.title, url, voice)
-                message = f"Queued '{article.title}' for processing."
+                return template(
+                    "preview",
+                    title=article.title,
+                    paragraphs=article.paragraphs,
+                    url=url,
+                    voice=voice,
+                    key=request.query.get("key", ""),
+                )
             except Exception as e:
                 log.exception("Failed to scrape article: %s", url)
                 message = f"Error: {e}"
@@ -102,6 +108,24 @@ def add_url(user):
         default_voice=user["default_voice"],
         feed_token=user["feed_token"],
     )
+
+
+@app.route("/add/confirm", method=["POST"])
+@require_user
+def confirm_add(user):
+    """Confirm article submission after preview. Creates the pending episode."""
+    url = request.forms.get("url")
+    voice = request.forms.get("voice") or user["default_voice"]
+    title = request.forms.get("title") or url
+    key = request.query.get("key", "")
+    try:
+        create_episode(user["id"], title, url, voice)
+        message = f"Queued '{title}' for processing."
+        redirect(f"/add?key={key}&message={message}")
+    except Exception as e:
+        log.exception("Failed to create episode for: %s", url)
+        message = f"Error: {e}"
+        redirect(f"/add?key={key}&message={message}&error=1")
 
 
 @app.route("/episodes")

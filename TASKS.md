@@ -45,3 +45,7 @@
 - [x] ~~Update cli.py to use new modules~~ (N/A - replaced by migrate.py)
 - [x] Update README.md with new setup instructions
 - [x] Remove old files (read_content.py, get_content.py, write_feed.py, root serve.py, add_article_cli.py, requirements.txt, voices/)
+
+## Enhancements
+
+- [x] Article preview before submission (/add shows scraped text, user approves or rejects before queuing)
