@@ -1,0 +1,59 @@
+% rebase('base', title='Settings', page='settings', key=key)
+<style>
+  .settings-section { margin: 20px 0; padding: 15px; background: #fafafa; border: 1px solid #eee; border-radius: 4px; }
+  .settings-section h3 { margin-top: 0; color: #333; }
+  .mono { font-family: monospace; background: #f0f0f0; padding: 4px 8px; border-radius: 3px; word-break: break-all; }
+  .copy-btn { padding: 4px 10px; font-size: 12px; cursor: pointer; margin-left: 8px; }
+  .settings-section label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 13px; color: #555; }
+  .settings-section .value { margin: 6px 0 12px 0; }
+</style>
+<h1>Settings</h1>
+% if message:
+<p class="message {{'error' if error else ''}}">{{message}}</p>
+% end
+<div class="settings-section">
+  <h3>Account</h3>
+  <label>Username</label>
+  <div class="value">{{user['username']}}</div>
+  <label>Created</label>
+  <div class="value">{{format_date(user['created_at'])}}</div>
+</div>
+<div class="settings-section">
+  <h3>API Key</h3>
+  <div class="value">
+    <span class="mono" id="api-key">{{user['api_key']}}</span>
+    <button class="copy-btn" onclick="copyToClipboard(document.getElementById('api-key').textContent, this)">Copy</button>
+  </div>
+</div>
+<div class="settings-section">
+  <h3>Feed URL</h3>
+  <p><small>Add this URL to your podcast app:</small></p>
+  <div class="value">
+    <span class="mono" id="feed-url">{{feed_url}}</span>
+    <button class="copy-btn" onclick="copyToClipboard(document.getElementById('feed-url').textContent, this)">Copy</button>
+  </div>
+</div>
+<div class="settings-section">
+  <h3>Default Voice</h3>
+  <form method="post">
+    <select name="voice">
+    % for v in voices:
+      % if v == user['default_voice']:
+      <option value="{{v}}" selected>{{v}}</option>
+      % else:
+      <option value="{{v}}">{{v}}</option>
+      % end
+    % end
+    </select>
+    <input type="submit" value="Save">
+  </form>
+</div>
+<script>
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = orig; }, 2000);
+  });
+}
+</script>

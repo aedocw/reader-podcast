@@ -4,11 +4,12 @@ import asyncio
 import json
 import logging
 import os
+from datetime import datetime
 
 import bottle
 from bottle import Bottle, request, response, abort, static_file, template, redirect
 
-from app.config import PORT, MP3_DIR, DEFAULT_VOICE
+from app.config import PORT, MP3_DIR, DEFAULT_VOICE, SITE_URL
 from app.db import (
     init_db,
     create_user,
@@ -26,6 +27,33 @@ from app.scraper import scrape
 from app.worker import start_workers
 
 log = logging.getLogger(__name__)
+
+
+def format_date(iso_str):
+    """Format ISO date string as 'Feb 9, 2026'."""
+    if not iso_str:
+        return ""
+    try:
+        dt = datetime.strptime(iso_str[:19], "%Y-%m-%d %H:%M:%S")
+        return dt.strftime("%b %-d, %Y")
+    except (ValueError, TypeError):
+        return iso_str
+
+
+def format_file_size(bytes_size):
+    """Format file size in bytes as '2.5 MB' or '150.0 KB'."""
+    if not bytes_size:
+        return ""
+    try:
+        size = int(bytes_size)
+    except (ValueError, TypeError):
+        return ""
+    if size >= 1_048_576:
+        return f"{size / 1_048_576:.1f} MB"
+    if size >= 1024:
+        return f"{size / 1024:.1f} KB"
+    return f"{size} B"
+
 
 app = Bottle()
 
@@ -109,6 +137,8 @@ def add_url(user):
         default_voice=user["default_voice"],
         feed_token=user["feed_token"],
         key=request.query.get("key", ""),
+        format_date=format_date,
+        format_file_size=format_file_size,
     )
 
 
@@ -193,7 +223,8 @@ def subscriptions(user):
         message=message,
         error=error,
         subscriptions=subs,
-        key=request.query.get("key"),
+        key=request.query.get("key", ""),
+        format_date=format_date,
     )
 
 
@@ -235,6 +266,47 @@ def delete_subscription(sub_id, user):
     finally:
         conn.close()
     redirect(f"/subscriptions?key={request.query.get('key', '')}")
+
+
+@app.route("/settings", method=["GET", "POST"])
+@require_user
+def settings(user):
+    """User settings page."""
+    key = request.query.get("key", "")
+    message = ""
+    error = False
+    if request.method == "POST":
+        voice = request.forms.get("voice")
+        if voice and voice in _get_english_voices():
+            conn = get_db()
+            try:
+                conn.execute(
+                    "UPDATE users SET default_voice = ? WHERE id = ?",
+                    (voice, user["id"]),
+                )
+                conn.commit()
+                # Refresh user data
+                user = conn.execute(
+                    "SELECT * FROM users WHERE id = ?", (user["id"],)
+                ).fetchone()
+            finally:
+                conn.close()
+            message = "Default voice updated."
+        else:
+            message = "Invalid voice selection."
+            error = True
+    feed_url = f"{SITE_URL}/feed/{user['feed_token']}"
+    voices = _get_english_voices()
+    return template(
+        "settings",
+        user=user,
+        feed_url=feed_url,
+        voices=voices,
+        message=message,
+        error=error,
+        format_date=format_date,
+        key=key,
+    )
 
 
 # ── Admin routes ───────────────────────────────────────────

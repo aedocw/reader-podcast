@@ -49,3 +49,4 @@
 ## Enhancements
 
 - [x] Article preview before submission (/add shows scraped text, user approves or rejects before queuing)
+- [x] UI polish: base template with nav bar, episode table with dates/sizes, settings page (API key, feed URL, voice)

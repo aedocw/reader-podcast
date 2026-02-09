@@ -1,27 +1,6 @@
-<!doctype html>
-<html>
-<head>
-<title>Subscriptions - Reader Podcast</title>
-<style>
-  body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
-  h1, h2 { color: #333; }
-  form.add-form { margin: 20px 0; }
-  input[type="text"] { width: 400px; padding: 8px; font-size: 14px; }
-  input[type="submit"], button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
-  .message { padding: 10px; background: #e8f5e9; border: 1px solid #a5d6a7; margin: 10px 0; }
-  .error { background: #ffebee; border-color: #ef9a9a; }
-  ul { list-style: none; padding: 0; }
-  li { padding: 10px 0; border-bottom: 1px solid #eee; }
-  .inactive { opacity: 0.5; }
-  .actions { margin-top: 4px; }
-  .actions form { display: inline; }
-  .btn-sm { padding: 2px 8px; font-size: 12px; }
-  .btn-danger { color: #c62828; }
-</style>
-</head>
-<body>
+% rebase('base', title='Subscriptions', page='subscriptions', key=key)
 <h1>RSS Subscriptions</h1>
-<form class="add-form" method="post">
+<form method="post" style="margin: 20px 0;">
   <input type="text" name="feed_url" placeholder="Enter RSS feed URL" required>
   <input type="submit" value="Subscribe">
 </form>
@@ -29,17 +8,17 @@
 <p class="message {{'error' if error else ''}}">{{message}}</p>
 % end
 <h2>Subscriptions</h2>
-<ul>
+<ul style="list-style:none; padding:0;">
 % for sub in subscriptions:
-  <li class="{{'inactive' if not sub['active'] else ''}}">
+  <li class="{{'inactive' if not sub['active'] else ''}}" style="padding:10px 0; border-bottom:1px solid #eee;">
     <strong>{{sub['title'] or sub['feed_url']}}</strong>
     % if sub['title']:
     <br><small>{{sub['feed_url']}}</small>
     % end
     % if sub['last_polled_at']:
-    <br><small>Last polled: {{sub['last_polled_at']}}</small>
+    <br><small>Last polled: {{format_date(sub['last_polled_at'])}}</small>
     % end
-    <div class="actions">
+    <div class="actions" style="margin-top:4px;">
       <form method="post" action="/subscriptions/{{sub['id']}}/toggle?key={{key}}">
         <button class="btn-sm" type="submit">{{'Pause' if sub['active'] else 'Resume'}}</button>
       </form>
@@ -50,9 +29,6 @@
   </li>
 % end
 % if not subscriptions:
-  <li>No subscriptions yet.</li>
+  <li class="empty">No subscriptions yet.</li>
 % end
 </ul>
-<p><small><a href="/add?key={{key}}">Back to Add Article</a></small></p>
-</body>
-</html>

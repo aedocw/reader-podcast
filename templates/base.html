@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<title>{{title}} - Reader Podcast</title>
+% if defined('auto_refresh') and auto_refresh:
+<meta http-equiv="refresh" content="5">
+% end
+<style>
+  body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #333; }
+  h1, h2 { color: #333; }
+  a { color: #1565c0; }
+
+  /* Nav */
+  nav { border-bottom: 1px solid #ddd; padding: 10px 0; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
+  nav .brand { font-weight: bold; font-size: 16px; color: #333; text-decoration: none; }
+  nav a { text-decoration: none; color: #555; font-size: 14px; padding: 4px 0; }
+  nav a:hover { color: #1565c0; }
+  nav a.active { color: #1565c0; border-bottom: 2px solid #1565c0; }
+
+  /* Forms */
+  input[type="text"], input[type="url"] { width: 400px; padding: 8px; font-size: 14px; }
+  select { padding: 8px; font-size: 14px; }
+  input[type="submit"], button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
+
+  /* Messages */
+  .message { padding: 10px; background: #e8f5e9; border: 1px solid #a5d6a7; margin: 10px 0; border-radius: 4px; }
+  .error { background: #ffebee; border-color: #ef9a9a; }
+
+  /* Status badges */
+  .status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+  .status-done { background: #e8f5e9; color: #2e7d32; }
+  .status-pending { background: #fff3e0; color: #e65100; }
+  .status-processing { background: #e3f2fd; color: #1565c0; }
+  .status-error { background: #ffebee; color: #c62828; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 8px; border-bottom: 2px solid #ddd; font-size: 13px; color: #666; }
+  td { padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: top; }
+
+  /* Buttons */
+  .delete-btn { background: none; border: none; color: #c62828; cursor: pointer; font-size: 12px; padding: 2px 6px; }
+  .delete-btn:hover { text-decoration: underline; }
+  .btn-sm { padding: 2px 8px; font-size: 12px; }
+  .btn-danger { color: #c62828; }
+
+  /* Subscriptions */
+  .inactive { opacity: 0.5; }
+  .actions form { display: inline; }
+
+  /* Empty state */
+  .empty { color: #999; font-style: italic; padding: 20px 0; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">Reader Podcast</span>
+  <a href="/add?key={{key}}" class="{{'active' if page == 'add' else ''}}">Add</a>
+  <a href="/subscriptions?key={{key}}" class="{{'active' if page == 'subscriptions' else ''}}">Subscriptions</a>
+  <a href="/settings?key={{key}}" class="{{'active' if page == 'settings' else ''}}">Settings</a>
+</nav>
+{{!base}}
+</body>
+</html>
