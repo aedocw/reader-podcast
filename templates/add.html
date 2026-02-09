@@ -21,6 +21,8 @@
   .status-error { background: #ffebee; color: #c62828; }
   ul { list-style: none; padding: 0; }
   li { padding: 8px 0; border-bottom: 1px solid #eee; }
+  .delete-btn { background: none; border: none; color: #c62828; cursor: pointer; font-size: 12px; margin-left: 8px; padding: 2px 6px; }
+  .delete-btn:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -53,6 +55,9 @@
     % end
     </strong>
     <span class="status status-{{ep['status']}}">{{ep['status']}}</span>
+    <form method="post" action="/episodes/{{ep['id']}}/delete?key={{request.query.get('key', '')}}" style="display:inline" onsubmit="return confirm('Delete this episode?')">
+      <button type="submit" class="delete-btn">delete</button>
+    </form>
     % if ep['error_message']:
     <br><small style="color:#c62828">{{ep['error_message']}}</small>
     % end

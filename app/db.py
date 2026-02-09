@@ -144,6 +144,27 @@ def get_episodes_for_user(user_id, status=None):
         conn.close()
 
 
+def delete_episode(episode_id, user_id):
+    """Delete an episode by ID (must belong to user_id). Removes MP3 file if present. Returns True if deleted."""
+    conn = get_db()
+    try:
+        ep = conn.execute(
+            "SELECT * FROM episodes WHERE id = ? AND user_id = ?",
+            (episode_id, user_id),
+        ).fetchone()
+        if not ep:
+            return False
+        if ep["mp3_filename"]:
+            mp3_path = os.path.join(MP3_DIR, ep["mp3_filename"])
+            if os.path.exists(mp3_path):
+                os.remove(mp3_path)
+        conn.execute("DELETE FROM episodes WHERE id = ?", (episode_id,))
+        conn.commit()
+        return True
+    finally:
+        conn.close()
+
+
 def update_episode_status(episode_id, status, error_message=None, mp3_filename=None, file_size=None):
     """Update episode status and optional fields."""
     conn = get_db()

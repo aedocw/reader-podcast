@@ -15,6 +15,7 @@ from app.db import (
     get_user_by_api_key,
     get_user_by_feed_token,
     create_episode,
+    delete_episode,
     get_episodes_for_user,
     get_db,
 )
@@ -126,6 +127,17 @@ def confirm_add(user):
         log.exception("Failed to create episode for: %s", url)
         message = f"Error: {e}"
         redirect(f"/add?key={key}&message={message}&error=1")
+
+
+@app.route("/episodes/<ep_id:int>/delete", method=["POST"])
+@require_user
+def delete_ep(ep_id, user):
+    """Delete an episode and its MP3 file."""
+    key = request.query.get("key", "")
+    if delete_episode(ep_id, user["id"]):
+        redirect(f"/add?key={key}&message=Episode deleted.")
+    else:
+        abort(404, "Episode not found")
 
 
 @app.route("/episodes")
