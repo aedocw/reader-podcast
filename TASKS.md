@@ -40,8 +40,8 @@
 
 ## Milestone 6: Deployment & Migration
 
-- [ ] Update Dockerfile (python:3.11-slim, uv, ffmpeg, no GPU)
-- [ ] Write migration script: parse existing feed.xml → insert episodes into SQLite, create default user
-- [ ] Update cli.py to use new modules
-- [ ] Update README.md with new setup instructions
+- [x] Update Dockerfile (python:3.11-slim, uv, ffmpeg, no GPU)
+- [x] Write migration script: parse existing feed.xml → insert episodes into SQLite, create default user
+- [x] ~~Update cli.py to use new modules~~ (N/A - replaced by migrate.py)
+- [x] Update README.md with new setup instructions
 - [x] Remove old files (read_content.py, get_content.py, write_feed.py, root serve.py, add_article_cli.py, requirements.txt, voices/)

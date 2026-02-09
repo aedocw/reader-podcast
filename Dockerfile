@@ -1,22 +1,20 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11
+FROM python:3.11-slim
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the current directory contents into the container at /usr/src/app
-COPY . .
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Install any needed packages specified in requirements.txt
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-RUN apt update && apt install ffmpeg -y
+WORKDIR /app
 
-# Expose port 8080 for the application
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
+
+COPY app/ app/
+COPY templates/ templates/
+COPY logo.jpg ./
+
 EXPOSE 8025
+ENV PORT=8025
 
-# Define environment variable
-ENV PORT 8025
-
-# Run adguard-web.py when the container launches
-CMD ["python", "serve.py"]
+CMD ["uv", "run", "python", "-m", "app.serve"]
