@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<title>Add Article - Reader Podcast</title>
+<style>
+  body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+  h1, h2 { color: #333; }
+  form { margin: 20px 0; }
+  input[type="text"] { width: 400px; padding: 8px; font-size: 14px; }
+  select { padding: 8px; font-size: 14px; }
+  input[type="submit"] { padding: 8px 20px; font-size: 14px; cursor: pointer; }
+  .message { padding: 10px; background: #e8f5e9; border: 1px solid #a5d6a7; margin: 10px 0; }
+  .error { background: #ffebee; border-color: #ef9a9a; }
+  .status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+  .status-done { background: #e8f5e9; color: #2e7d32; }
+  .status-pending { background: #fff3e0; color: #e65100; }
+  .status-processing { background: #e3f2fd; color: #1565c0; }
+  .status-error { background: #ffebee; color: #c62828; }
+  ul { list-style: none; padding: 0; }
+  li { padding: 8px 0; border-bottom: 1px solid #eee; }
+</style>
+</head>
+<body>
+<h1>Add a new article</h1>
+<form method="post">
+  <input type="text" name="url" placeholder="Enter article URL" required>
+  <select name="voice">
+  % for voice in voices:
+    % if voice == default_voice:
+    <option value="{{voice}}" selected>{{voice}}</option>
+    % else:
+    <option value="{{voice}}">{{voice}}</option>
+    % end
+  % end
+  </select>
+  <input type="submit" value="Submit">
+</form>
+% if message:
+<p class="message {{'error' if error else ''}}">{{message}}</p>
+% end
+<h2>Episodes</h2>
+<ul>
+% for ep in episodes:
+  <li>
+    <strong>
+    % if ep['status'] == 'done' and ep['mp3_filename']:
+      <a href="/mp3/{{ep['mp3_filename']}}">{{ep['title']}}</a>
+    % else:
+      {{ep['title']}}
+    % end
+    </strong>
+    <span class="status status-{{ep['status']}}">{{ep['status']}}</span>
+    % if ep['error_message']:
+    <br><small style="color:#c62828">{{ep['error_message']}}</small>
+    % end
+  </li>
+% end
+</ul>
+<p><small><a href="/feed/{{feed_token}}">RSS Feed</a></small></p>
+</body>
+</html>

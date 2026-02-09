@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<title>Subscriptions - Reader Podcast</title>
+<style>
+  body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+  h1, h2 { color: #333; }
+  form { margin: 20px 0; }
+  input[type="text"] { width: 400px; padding: 8px; font-size: 14px; }
+  input[type="submit"] { padding: 8px 20px; font-size: 14px; cursor: pointer; }
+  .message { padding: 10px; background: #e8f5e9; border: 1px solid #a5d6a7; margin: 10px 0; }
+  .error { background: #ffebee; border-color: #ef9a9a; }
+  ul { list-style: none; padding: 0; }
+  li { padding: 8px 0; border-bottom: 1px solid #eee; }
+  .inactive { opacity: 0.5; }
+</style>
+</head>
+<body>
+<h1>RSS Subscriptions</h1>
+<form method="post">
+  <input type="text" name="feed_url" placeholder="Enter RSS feed URL" required>
+  <input type="submit" value="Subscribe">
+</form>
+% if message:
+<p class="message {{'error' if error else ''}}">{{message}}</p>
+% end
+<h2>Active Subscriptions</h2>
+<ul>
+% for sub in subscriptions:
+  <li class="{{'inactive' if not sub['active'] else ''}}">
+    <strong>{{sub['title'] or sub['feed_url']}}</strong>
+    <br><small>{{sub['feed_url']}}</small>
+    % if sub['last_polled_at']:
+    <br><small>Last polled: {{sub['last_polled_at']}}</small>
+    % end
+  </li>
+% end
+% if not subscriptions:
+  <li>No subscriptions yet.</li>
+% end
+</ul>
+<p><small><a href="/add?key={{key}}">Back to Add Article</a></small></p>
+</body>
+</html>

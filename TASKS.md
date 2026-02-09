@@ -17,12 +17,12 @@
 
 ## Milestone 3: Web Application
 
-- [ ] Implement app/auth.py (API key decorator, user resolution)
-- [ ] Implement app/feed_gen.py (dynamic per-user RSS 2.0 generation from DB)
-- [ ] Rewrite app/serve.py with all routes (add, episodes, feed, mp3, voices, settings, admin)
-- [ ] Create templates/ (add.html with voice dropdown, subscriptions.html)
-- [ ] Implement /voices endpoint (edge_tts.list_voices() filtered to English)
-- [ ] Implement admin endpoints for user creation/management
+- [x] Implement app/auth.py (API key decorator, user resolution)
+- [x] Implement app/feed_gen.py (dynamic per-user RSS 2.0 generation from DB)
+- [x] Rewrite app/serve.py with all routes (add, episodes, feed, mp3, voices, settings, admin)
+- [x] Create templates/ (add.html with voice dropdown, subscriptions.html)
+- [x] Implement /voices endpoint (edge_tts.list_voices() filtered to English)
+- [x] Implement admin endpoints for user creation/management
 
 ## Milestone 4: Background Processing
 
