@@ -152,12 +152,13 @@ def confirm_add(user):
     key = request.query.get("key", "")
     try:
         create_episode(user["id"], title, url, voice)
-        message = f"Queued '{title}' for processing."
-        redirect(f"/add?key={key}&message={message}")
     except Exception as e:
         log.exception("Failed to create episode for: %s", url)
         message = f"Error: {e}"
         redirect(f"/add?key={key}&message={message}&error=1")
+        return
+    message = f"Queued '{title}' for processing."
+    redirect(f"/add?key={key}&message={message}")
 
 
 @app.route("/episodes/<ep_id:int>/delete", method=["POST"])

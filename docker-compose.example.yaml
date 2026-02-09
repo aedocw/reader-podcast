@@ -1,0 +1,21 @@
+services:
+  reader-podcast:
+    container_name: reader-podcast
+    build: .
+    # Or use a pre-built image:
+    # image: reader-podcast:latest
+    env_file:
+      - "reader-podcast.env"
+    ports:
+      - "8025:8025"
+    restart: unless-stopped
+    volumes:
+      - reader-podcast-data:/app/data
+
+volumes:
+  reader-podcast-data:
+
+# reader-podcast.env should contain:
+#   SITE_URL=https://pod.example.com
+#   ADMIN_KEY=your-secret-admin-key
+#   DEFAULT_VOICE=en-US-AndrewNeural    (optional)
