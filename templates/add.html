@@ -55,7 +55,7 @@
     % end
     </strong>
     <span class="status status-{{ep['status']}}">{{ep['status']}}</span>
-    <form method="post" action="/episodes/{{ep['id']}}/delete?key={{request.query.get('key', '')}}" style="display:inline" onsubmit="return confirm('Delete this episode?')">
+    <form method="post" action="/episodes/{{ep['id']}}/delete?key={{key}}" style="display:inline" onsubmit="return confirm('Delete this episode?')">
       <button type="submit" class="delete-btn">delete</button>
     </form>
     % if ep['error_message']:

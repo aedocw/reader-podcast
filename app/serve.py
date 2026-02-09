@@ -108,6 +108,7 @@ def add_url(user):
         voices=voices,
         default_voice=user["default_voice"],
         feed_token=user["feed_token"],
+        key=request.query.get("key", ""),
     )
 
 
