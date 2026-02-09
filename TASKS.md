@@ -10,10 +10,10 @@
 
 ## Milestone 2: Core TTS Replacement
 
-- [ ] Implement app/text_clean.py (whitespace normalization, quote straightening, punctuation collapsing)
-- [ ] Implement app/tts.py (Edge TTS async parallel synthesis, pydub audio combining, retry logic)
-- [ ] Implement app/scraper.py (refactor get_content.py with text cleaning, return dataclass)
-- [ ] Test TTS pipeline end-to-end: URL → scrape → clean → synthesize → MP3
+- [x] Implement app/text_clean.py (whitespace normalization, quote straightening, punctuation collapsing)
+- [x] Implement app/tts.py (Edge TTS async parallel synthesis, pydub audio combining, retry logic)
+- [x] Implement app/scraper.py (refactor get_content.py with text cleaning, return dataclass)
+- [x] Test TTS pipeline end-to-end: URL → scrape → clean → synthesize → MP3
 
 ## Milestone 3: Web Application
 
