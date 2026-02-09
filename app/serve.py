@@ -20,6 +20,7 @@ from app.db import (
 )
 from app.auth import require_user, require_admin
 from app.feed_gen import generate_feed
+from app.rss_monitor import mark_existing_as_seen
 from app.scraper import scrape
 from app.worker import start_workers
 
@@ -123,7 +124,7 @@ def voices():
 @app.route("/subscriptions", method=["GET", "POST"])
 @require_user
 def subscriptions(user):
-    """Manage RSS subscriptions (Milestone 5 will flesh this out)."""
+    """Manage RSS subscriptions."""
     message = ""
     error = False
     conn = get_db()
@@ -131,12 +132,19 @@ def subscriptions(user):
         if request.method == "POST":
             feed_url = request.forms.get("feed_url")
             if feed_url:
-                conn.execute(
-                    "INSERT INTO subscriptions (user_id, feed_url) VALUES (?, ?)",
-                    (user["id"], feed_url),
+                import feedparser
+                feed = feedparser.parse(feed_url)
+                title = feed.feed.get("title", "") if feed.feed else ""
+                cur = conn.execute(
+                    "INSERT INTO subscriptions (user_id, feed_url, title) VALUES (?, ?, ?)",
+                    (user["id"], feed_url, title or None),
                 )
                 conn.commit()
-                message = f"Subscribed to {feed_url}"
+                sub_id = cur.lastrowid
+                # Mark all existing feed items as seen
+                count = mark_existing_as_seen(sub_id, feed_url)
+                display = title or feed_url
+                message = f"Subscribed to {display} ({count} existing articles marked as seen)"
         subs = conn.execute(
             "SELECT * FROM subscriptions WHERE user_id = ? ORDER BY created_at DESC",
             (user["id"],),
@@ -150,6 +158,46 @@ def subscriptions(user):
         subscriptions=subs,
         key=request.query.get("key"),
     )
+
+
+@app.route("/subscriptions/<sub_id:int>/toggle", method=["POST"])
+@require_user
+def toggle_subscription(sub_id, user):
+    """Toggle a subscription active/inactive."""
+    conn = get_db()
+    try:
+        sub = conn.execute(
+            "SELECT * FROM subscriptions WHERE id = ? AND user_id = ?",
+            (sub_id, user["id"]),
+        ).fetchone()
+        if not sub:
+            abort(404, "Subscription not found")
+        new_active = 0 if sub["active"] else 1
+        conn.execute("UPDATE subscriptions SET active = ? WHERE id = ?", (new_active, sub_id))
+        conn.commit()
+    finally:
+        conn.close()
+    redirect(f"/subscriptions?key={request.query.get('key', '')}")
+
+
+@app.route("/subscriptions/<sub_id:int>/delete", method=["POST"])
+@require_user
+def delete_subscription(sub_id, user):
+    """Delete a subscription and its seen_articles records."""
+    conn = get_db()
+    try:
+        sub = conn.execute(
+            "SELECT * FROM subscriptions WHERE id = ? AND user_id = ?",
+            (sub_id, user["id"]),
+        ).fetchone()
+        if not sub:
+            abort(404, "Subscription not found")
+        conn.execute("DELETE FROM seen_articles WHERE subscription_id = ?", (sub_id,))
+        conn.execute("DELETE FROM subscriptions WHERE id = ?", (sub_id,))
+        conn.commit()
+    finally:
+        conn.close()
+    redirect(f"/subscriptions?key={request.query.get('key', '')}")
 
 
 # ── Admin routes ───────────────────────────────────────────

@@ -32,11 +32,11 @@
 
 ## Milestone 5: RSS Feed Monitoring
 
-- [ ] Implement app/rss_monitor.py (feedparser polling, new article detection, seen_articles tracking)
-- [ ] Add RSS polling thread to worker.py
-- [ ] Implement subscription management routes (add/remove/toggle)
-- [ ] Create subscriptions.html template
-- [ ] On new subscription: mark all existing feed items as seen (only process future articles)
+- [x] Implement app/rss_monitor.py (feedparser polling, new article detection, seen_articles tracking)
+- [x] Add RSS polling thread to worker.py
+- [x] Implement subscription management routes (add/remove/toggle)
+- [x] Create subscriptions.html template
+- [x] On new subscription: mark all existing feed items as seen (only process future articles)
 
 ## Milestone 6: Deployment & Migration
 

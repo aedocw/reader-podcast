@@ -5,34 +5,48 @@
 <style>
   body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
   h1, h2 { color: #333; }
-  form { margin: 20px 0; }
+  form.add-form { margin: 20px 0; }
   input[type="text"] { width: 400px; padding: 8px; font-size: 14px; }
-  input[type="submit"] { padding: 8px 20px; font-size: 14px; cursor: pointer; }
+  input[type="submit"], button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
   .message { padding: 10px; background: #e8f5e9; border: 1px solid #a5d6a7; margin: 10px 0; }
   .error { background: #ffebee; border-color: #ef9a9a; }
   ul { list-style: none; padding: 0; }
-  li { padding: 8px 0; border-bottom: 1px solid #eee; }
+  li { padding: 10px 0; border-bottom: 1px solid #eee; }
   .inactive { opacity: 0.5; }
+  .actions { margin-top: 4px; }
+  .actions form { display: inline; }
+  .btn-sm { padding: 2px 8px; font-size: 12px; }
+  .btn-danger { color: #c62828; }
 </style>
 </head>
 <body>
 <h1>RSS Subscriptions</h1>
-<form method="post">
+<form class="add-form" method="post">
   <input type="text" name="feed_url" placeholder="Enter RSS feed URL" required>
   <input type="submit" value="Subscribe">
 </form>
 % if message:
 <p class="message {{'error' if error else ''}}">{{message}}</p>
 % end
-<h2>Active Subscriptions</h2>
+<h2>Subscriptions</h2>
 <ul>
 % for sub in subscriptions:
   <li class="{{'inactive' if not sub['active'] else ''}}">
     <strong>{{sub['title'] or sub['feed_url']}}</strong>
+    % if sub['title']:
     <br><small>{{sub['feed_url']}}</small>
+    % end
     % if sub['last_polled_at']:
     <br><small>Last polled: {{sub['last_polled_at']}}</small>
     % end
+    <div class="actions">
+      <form method="post" action="/subscriptions/{{sub['id']}}/toggle?key={{key}}">
+        <button class="btn-sm" type="submit">{{'Pause' if sub['active'] else 'Resume'}}</button>
+      </form>
+      <form method="post" action="/subscriptions/{{sub['id']}}/delete?key={{key}}" onsubmit="return confirm('Delete this subscription?')">
+        <button class="btn-sm btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
   </li>
 % end
 % if not subscriptions:

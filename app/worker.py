@@ -5,8 +5,9 @@ import os
 import threading
 import time
 
-from app.config import MP3_DIR
+from app.config import MP3_DIR, RSS_POLL_INTERVAL_SECONDS
 from app.db import get_db, update_episode_status
+from app.rss_monitor import poll_all_due
 from app.scraper import scrape
 from app.tts import synthesize
 
@@ -80,10 +81,27 @@ def _tts_worker_loop():
             time.sleep(POLL_INTERVAL)
 
 
+def _rss_worker_loop():
+    """Main loop for the RSS poller thread."""
+    log.info("RSS poller thread started (interval: %ds)", RSS_POLL_INTERVAL_SECONDS)
+    while True:
+        try:
+            new = poll_all_due()
+            if new:
+                log.info("RSS poller created %d new episodes", new)
+        except Exception:
+            log.exception("Unexpected error in RSS poller loop")
+        time.sleep(RSS_POLL_INTERVAL_SECONDS)
+
+
 def start_workers():
     """Start background worker threads. Call once at app startup."""
     _cleanup_interrupted()
 
     tts_thread = threading.Thread(target=_tts_worker_loop, daemon=True, name="tts-worker")
     tts_thread.start()
+
+    rss_thread = threading.Thread(target=_rss_worker_loop, daemon=True, name="rss-poller")
+    rss_thread.start()
+
     log.info("Background workers started")
