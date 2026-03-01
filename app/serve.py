@@ -114,7 +114,7 @@ def add_url(user):
                 return template(
                     "preview",
                     title=article.title,
-                    paragraphs=article.paragraphs,
+                    body_text="\n\n".join(article.paragraphs),
                     url=url,
                     voice=voice,
                     key=request.query.get("key", ""),
@@ -149,9 +149,10 @@ def confirm_add(user):
     url = request.forms.get("url")
     voice = request.forms.get("voice") or user["default_voice"]
     title = request.forms.get("title") or url
+    body_text = request.forms.get("body_text") or None
     key = request.query.get("key", "")
     try:
-        create_episode(user["id"], title, url, voice)
+        create_episode(user["id"], title, url, voice, body_text=body_text)
     except Exception as e:
         log.exception("Failed to create episode for: %s", url)
         message = f"Error: {e}"

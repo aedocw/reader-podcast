@@ -51,11 +51,15 @@ def _process_episode(episode):
     update_episode_status(episode_id, "processing")
 
     try:
-        article = scrape(episode["source_url"])
+        if episode["body_text"]:
+            paragraphs = [p for p in episode["body_text"].split("\n\n") if p.strip()]
+        else:
+            article = scrape(episode["source_url"])
+            paragraphs = article.paragraphs
         mp3_filename = f"episode_{episode_id}.mp3"
         output_path = os.path.join(MP3_DIR, mp3_filename)
 
-        file_size = synthesize(article.paragraphs, episode["voice"], output_path)
+        file_size = synthesize(paragraphs, episode["voice"], output_path)
         update_episode_status(
             episode_id, "done",
             mp3_filename=mp3_filename, file_size=file_size,

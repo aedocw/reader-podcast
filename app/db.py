@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS episodes (
     user_id INTEGER NOT NULL REFERENCES users(id),
     title TEXT NOT NULL,
     source_url TEXT NOT NULL,
+    body_text TEXT,
     mp3_filename TEXT,
     file_size INTEGER,
     voice TEXT NOT NULL,
@@ -67,6 +68,12 @@ def init_db():
     os.makedirs("data/tmp", exist_ok=True)
     conn = get_db()
     conn.executescript(_SCHEMA)
+    # Migrate existing databases that predate body_text column
+    try:
+        conn.execute("ALTER TABLE episodes ADD COLUMN body_text TEXT")
+        conn.commit()
+    except Exception:
+        pass  # Column already exists
     conn.close()
 
 
@@ -113,13 +120,13 @@ def get_user_by_feed_token(feed_token):
 
 # ── Episode CRUD ───────────────────────────────────────────
 
-def create_episode(user_id, title, source_url, voice):
+def create_episode(user_id, title, source_url, voice, body_text=None):
     """Create a new pending episode. Returns the episode Row."""
     conn = get_db()
     try:
         cur = conn.execute(
-            "INSERT INTO episodes (user_id, title, source_url, voice) VALUES (?, ?, ?, ?)",
-            (user_id, title, source_url, voice),
+            "INSERT INTO episodes (user_id, title, source_url, voice, body_text) VALUES (?, ?, ?, ?, ?)",
+            (user_id, title, source_url, voice, body_text or None),
         )
         conn.commit()
         return conn.execute("SELECT * FROM episodes WHERE id = ?", (cur.lastrowid,)).fetchone()
