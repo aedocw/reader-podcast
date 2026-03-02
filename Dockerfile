@@ -14,7 +14,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --extra vibevoice
 
 # vibevoice is not on PyPI; install from GitHub into the uv-managed venv
-RUN .venv/bin/pip install git+https://github.com/microsoft/VibeVoice.git
+RUN uv pip install git+https://github.com/microsoft/VibeVoice.git
 
 COPY app/ app/
 COPY templates/ templates/
