@@ -14,10 +14,14 @@ dependencies = [
     "feedparser",
     "lxml",
     "lxml-html-clean",
+]
+
+[project.optional-dependencies]
+vibevoice = [
+    "torch",
     "openai-whisper",
     "thefuzz",
-    "torch",
-    # vibevoice is installed from GitHub in the Dockerfile (not on PyPI):
+    # vibevoice itself is installed from GitHub in the Dockerfile (not on PyPI):
     #   pip install git+https://github.com/microsoft/VibeVoice.git
 ]
 

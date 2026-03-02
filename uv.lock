@@ -1456,9 +1456,13 @@ dependencies = [
     { name = "lxml-html-clean" },
     { name = "newspaper3k" },
     { name = "nltk" },
-    { name = "openai-whisper" },
     { name = "pydub" },
     { name = "python-dotenv" },
+]
+
+[package.optional-dependencies]
+vibevoice = [
+    { name = "openai-whisper" },
     { name = "thefuzz" },
     { name = "torch" },
 ]
@@ -1472,12 +1476,13 @@ requires-dist = [
     { name = "lxml-html-clean" },
     { name = "newspaper3k" },
     { name = "nltk" },
-    { name = "openai-whisper" },
+    { name = "openai-whisper", marker = "extra == 'vibevoice'" },
     { name = "pydub" },
     { name = "python-dotenv" },
-    { name = "thefuzz" },
-    { name = "torch", index = "https://download.pytorch.org/whl/cu121" },
+    { name = "thefuzz", marker = "extra == 'vibevoice'" },
+    { name = "torch", marker = "extra == 'vibevoice'", index = "https://download.pytorch.org/whl/cu121" },
 ]
+provides-extras = ["vibevoice"]
 
 [[package]]
 name = "regex"
