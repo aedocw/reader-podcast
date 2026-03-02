@@ -16,6 +16,10 @@ RUN uv sync --frozen --no-dev --extra vibevoice
 # vibevoice is not on PyPI; install from GitHub into the uv-managed venv
 RUN uv pip install git+https://github.com/microsoft/VibeVoice.git
 
+# Fetch voice .pt files (not included in the pip package)
+RUN git clone --depth 1 --filter=blob:none --sparse https://github.com/microsoft/VibeVoice.git /opt/VibeVoice \
+    && cd /opt/VibeVoice && git sparse-checkout set demo/voices
+
 COPY app/ app/
 COPY templates/ templates/
 COPY logo.jpg ./

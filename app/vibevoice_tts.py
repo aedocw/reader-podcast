@@ -46,16 +46,20 @@ def _get_device():
 def _get_voice_path(speaker_name):
     import vibevoice
     vibevoice_dir = os.path.dirname(vibevoice.__file__)
-    voices_dir = os.path.join(os.path.dirname(vibevoice_dir), "demo", "voices", "streaming_model")
+    candidates = [
+        os.environ.get("VIBEVOICE_VOICES_DIR", ""),
+        os.path.join(os.path.dirname(vibevoice_dir), "demo", "voices", "streaming_model"),
+        "/opt/VibeVoice/demo/voices/streaming_model",
+        os.path.expanduser("~/repos/VibeVoice/demo/voices/streaming_model"),
+    ]
 
-    if not os.path.exists(voices_dir):
-        voices_dir = os.path.expanduser("~/repos/VibeVoice/demo/voices/streaming_model")
+    voices_dir = next((p for p in candidates if p and os.path.exists(p)), None)
 
-    if not os.path.exists(voices_dir):
+    if voices_dir is None:
         raise FileNotFoundError(
-            f"VibeVoice voices directory not found at {voices_dir}.\n"
-            "Install VibeVoice from GitHub: "
-            "pip install git+https://github.com/microsoft/VibeVoice.git"
+            "VibeVoice voices directory not found. Checked:\n"
+            + "\n".join(f"  {p}" for p in candidates if p)
+            + "\nSet VIBEVOICE_VOICES_DIR env var to override."
         )
 
     pt_files = [f for f in os.listdir(voices_dir) if f.endswith(".pt")]
