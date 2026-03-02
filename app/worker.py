@@ -9,7 +9,7 @@ from app.config import MP3_DIR, RSS_POLL_INTERVAL_SECONDS
 from app.db import get_db, update_episode_status
 from app.rss_monitor import poll_all_due
 from app.scraper import scrape
-from app.tts import synthesize
+from app.tts import synthesize as edge_synthesize
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +59,11 @@ def _process_episode(episode):
         mp3_filename = f"episode_{episode_id}.mp3"
         output_path = os.path.join(MP3_DIR, mp3_filename)
 
-        file_size = synthesize(paragraphs, episode["voice"], output_path)
+        if episode["voice"] == "VibeVoice-Davis":
+            from app.vibevoice_tts import synthesize as vv_synthesize
+            file_size = vv_synthesize(paragraphs, output_path)
+        else:
+            file_size = edge_synthesize(paragraphs, episode["voice"], output_path)
         update_episode_status(
             episode_id, "done",
             mp3_filename=mp3_filename, file_size=file_size,

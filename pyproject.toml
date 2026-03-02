@@ -14,4 +14,17 @@ dependencies = [
     "feedparser",
     "lxml",
     "lxml-html-clean",
+    "openai-whisper",
+    "thefuzz",
+    "torch",
+    # vibevoice is installed from GitHub in the Dockerfile (not on PyPI):
+    #   pip install git+https://github.com/microsoft/VibeVoice.git
 ]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
