@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 import threading
 import time
 
@@ -52,7 +53,7 @@ def _process_episode(episode):
 
     try:
         if episode["body_text"]:
-            paragraphs = [p for p in episode["body_text"].split("\n\n") if p.strip()]
+            paragraphs = [p.strip() for p in re.split(r'\r?\n\r?\n', episode["body_text"]) if p.strip()]
         else:
             article = scrape(episode["source_url"])
             paragraphs = article.paragraphs
