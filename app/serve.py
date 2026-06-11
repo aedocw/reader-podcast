@@ -381,7 +381,7 @@ def main():
     init_db()
     start_workers()
     log.info("Starting Reader Podcast on port %d", PORT)
-    app.run(host="0.0.0.0", port=PORT, debug=True, reloader=False)
+    app.run(host="0.0.0.0", port=PORT, server="waitress", reloader=False)
 
 
 if __name__ == "__main__":
