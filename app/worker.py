@@ -60,11 +60,7 @@ def _process_episode(episode):
         mp3_filename = f"episode_{episode_id}.mp3"
         output_path = os.path.join(MP3_DIR, mp3_filename)
 
-        if episode["voice"] == "VibeVoice-Davis":
-            from app.vibevoice_tts import synthesize as vv_synthesize
-            file_size = vv_synthesize(paragraphs, output_path)
-        else:
-            file_size = edge_synthesize(paragraphs, episode["voice"], output_path)
+        file_size = edge_synthesize(paragraphs, episode["voice"], output_path)
         update_episode_status(
             episode_id, "done",
             mp3_filename=mp3_filename, file_size=file_size,

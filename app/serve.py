@@ -367,10 +367,10 @@ def _get_english_voices():
             v["ShortName"] for v in all_voices
             if v.get("Locale", "").startswith("en-US")
         )
-        _voice_cache = ["VibeVoice-Davis"] + en_us_voices
+        _voice_cache = en_us_voices
     except Exception:
         log.exception("Failed to fetch Edge TTS voices")
-        _voice_cache = ["VibeVoice-Davis", DEFAULT_VOICE]
+        _voice_cache = [DEFAULT_VOICE]
     return _voice_cache
 
 
