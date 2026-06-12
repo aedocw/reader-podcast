@@ -175,7 +175,8 @@ def confirm_add(user):
         log.exception("Failed to create episode for: %s", url)
         redirect(f"/add?{urlencode({'key': key, 'message': f'Error: {e}', 'error': '1'})}")
         return
-    redirect(f"/add?{urlencode({'key': key, 'message': f\"Queued '{title}' for processing.\"})}")
+    msg = f"Queued '{title}' for processing."
+    redirect(f"/add?{urlencode({'key': key, 'message': msg})}")
 
 
 @app.route("/episodes/<ep_id:int>/delete", method=["POST"])
