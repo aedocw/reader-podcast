@@ -25,6 +25,7 @@ from app.feed_gen import generate_feed
 from app.rss_monitor import mark_existing_as_seen
 from app.scraper import scrape
 from app.worker import start_workers
+from app.youtube import is_youtube_url, get_info as yt_get_info, format_duration
 
 log = logging.getLogger(__name__)
 
@@ -108,6 +109,22 @@ def add_url(user):
         if not url:
             message = "URL is required"
             error = True
+        elif is_youtube_url(url):
+            try:
+                info = yt_get_info(url)
+                return template(
+                    "youtube_preview",
+                    title=info["title"],
+                    uploader=info["uploader"],
+                    duration=format_duration(info["duration"]),
+                    url=url,
+                    voice=voice,
+                    key=request.query.get("key", ""),
+                )
+            except Exception as e:
+                log.exception("Failed to fetch YouTube info: %s", url)
+                message = f"Error fetching video info: {e}"
+                error = True
         else:
             try:
                 article = scrape(url)

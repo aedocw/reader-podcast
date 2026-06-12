@@ -11,6 +11,7 @@ from app.db import get_db, update_episode_status
 from app.rss_monitor import poll_all_due
 from app.scraper import scrape
 from app.tts import synthesize as edge_synthesize
+from app.youtube import is_youtube_url, download_audio as yt_download
 
 log = logging.getLogger(__name__)
 
@@ -52,15 +53,18 @@ def _process_episode(episode):
     update_episode_status(episode_id, "processing")
 
     try:
-        if episode["body_text"]:
-            paragraphs = [p.strip() for p in re.split(r'\r?\n\r?\n', episode["body_text"]) if p.strip()]
-        else:
-            article = scrape(episode["source_url"])
-            paragraphs = article.paragraphs
         mp3_filename = f"episode_{episode_id}.mp3"
         output_path = os.path.join(MP3_DIR, mp3_filename)
 
-        file_size = edge_synthesize(paragraphs, episode["voice"], output_path)
+        if is_youtube_url(episode["source_url"]):
+            file_size = yt_download(episode["source_url"], output_path)
+        else:
+            if episode["body_text"]:
+                paragraphs = [p.strip() for p in re.split(r'\r?\n\r?\n', episode["body_text"]) if p.strip()]
+            else:
+                article = scrape(episode["source_url"])
+                paragraphs = article.paragraphs
+            file_size = edge_synthesize(paragraphs, episode["voice"], output_path)
         update_episode_status(
             episode_id, "done",
             mp3_filename=mp3_filename, file_size=file_size,

@@ -15,4 +15,5 @@ dependencies = [
     "lxml",
     "lxml-html-clean",
     "waitress",
+    "yt-dlp",
 ]

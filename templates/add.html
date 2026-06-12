@@ -1,7 +1,7 @@
 % rebase('base', title='Add Article', page='add', key=key, auto_refresh=has_active)
 <h1>Add a new article</h1>
 <form method="post">
-  <input type="text" name="url" placeholder="Enter article URL" required>
+  <input type="text" name="url" placeholder="Enter article or YouTube URL" required>
   <select name="voice">
   % for v in voices:
     % if v == default_voice:
