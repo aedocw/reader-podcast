@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from urllib.parse import urlencode
 
 import bottle
 from bottle import Bottle, request, response, abort, static_file, template, redirect
@@ -172,11 +173,9 @@ def confirm_add(user):
         create_episode(user["id"], title, url, voice, body_text=body_text)
     except Exception as e:
         log.exception("Failed to create episode for: %s", url)
-        message = f"Error: {e}"
-        redirect(f"/add?key={key}&message={message}&error=1")
+        redirect(f"/add?{urlencode({'key': key, 'message': f'Error: {e}', 'error': '1'})}")
         return
-    message = f"Queued '{title}' for processing."
-    redirect(f"/add?key={key}&message={message}")
+    redirect(f"/add?{urlencode({'key': key, 'message': f\"Queued '{title}' for processing.\"})}")
 
 
 @app.route("/episodes/<ep_id:int>/delete", method=["POST"])
