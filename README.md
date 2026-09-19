@@ -25,7 +25,13 @@ A self-hosted web app that converts web articles into podcast episodes using Mic
 git clone https://github.com/aedocw/reader-podcast.git
 cd reader-podcast
 uv sync
+uv pip install yt-dlp   # unpinned on purpose, see below
 ```
+
+`yt-dlp` is deliberately left out of `pyproject.toml`/`uv.lock`. YouTube breaks
+older versions every few months, so it is installed unpinned and picks up the
+current release on each install or image build. Re-run the command above (or
+rebuild the image) when YouTube downloads start failing with `HTTP Error 403`.
 
 ### Configure
 

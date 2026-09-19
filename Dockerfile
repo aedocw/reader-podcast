@@ -13,6 +13,10 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
+# yt-dlp unpinned: YouTube breaks stale versions
+ARG YTDLP_REFRESH=0
+RUN uv pip install --python /app/.venv --upgrade yt-dlp
+
 COPY app/ app/
 COPY templates/ templates/
 COPY logo.jpg ./
